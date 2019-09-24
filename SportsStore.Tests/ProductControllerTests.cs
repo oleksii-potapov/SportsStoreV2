@@ -6,6 +6,7 @@ using System.Linq;
 using SportsStore.Controllers;
 using System.Collections;
 using System.Collections.Generic;
+using SportsStore.Models.ViewModels;
 
 namespace SportsStore.Tests
 {
@@ -33,6 +34,29 @@ namespace SportsStore.Tests
             Assert.True(products.Length == 2);
             Assert.Equal("P4", products[0].Name);
             Assert.Equal(5, products[1].ProductId);
+        }
+
+        [Fact]
+        public void CanSendPaginationViewModel()
+        {
+            Mock<IProductRepository> mock = new Mock<IProductRepository>();
+            mock.Setup(m => m.Products).Returns((new Product[] {
+                new Product {ProductId = 1, Name = "P1"},
+                new Product {ProductId = 2, Name = "P2"},
+                new Product {ProductId = 3, Name = "P3"},
+                new Product {ProductId = 4, Name = "P4"},
+                new Product {ProductId = 5, Name = "P5"},
+            }).AsQueryable<Product>());
+
+            var controller = new ProductController(mock.Object);
+
+            var result = controller.List(2).ViewData.Model as ProductsListViewModel;
+
+            PagingInfo pagingInfo = result.PagingInfo;
+            Assert.Equal(2, pagingInfo.CurrentPage);
+            Assert.Equal(4, pagingInfo.ItemsPerPage);
+            Assert.Equal(5, pagingInfo.TotalItems);
+            Assert.Equal(2, pagingInfo.TotalPages);
         }
     }
 }
