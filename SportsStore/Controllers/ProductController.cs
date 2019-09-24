@@ -20,19 +20,20 @@ namespace SportsStore.Controllers
 
         public ViewResult List(string category, int productPage = 1)
         {
+            var query = _repository.Products
+                .Where(p => category == null || p.Category == category)
+                .OrderBy(p => p.ProductId);
             var model = new ProductsListViewModel
             {
+                Products = query
+                    .Skip((productPage - 1) * PageSize)
+                    .Take(PageSize),
                 PagingInfo = new PagingInfo
                 {
                     CurrentPage = productPage,
                     ItemsPerPage = PageSize,
-                    TotalItems = _repository.Products.Count()
+                    TotalItems = query.Count()
                 },
-                Products = _repository.Products
-                .Where(p => category == null || p.Category == category)
-                .OrderBy(p => p.ProductId)
-                .Skip((productPage - 1) * PageSize)
-                .Take(PageSize),
                 CurrentCategory = category
             };
 
