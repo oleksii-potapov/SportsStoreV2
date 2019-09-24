@@ -28,7 +28,7 @@ namespace SportsStore.Tests
             controller.PageSize = 3;
 
             var result =
-                controller.List(2).ViewData.Model as ProductsListViewModel;
+                controller.List(null, 2).ViewData.Model as ProductsListViewModel;
 
             Product[] products = result.Products.ToArray();
             Assert.True(products.Length == 2);
@@ -50,13 +50,33 @@ namespace SportsStore.Tests
 
             var controller = new ProductController(mock.Object);
 
-            var result = controller.List(2).ViewData.Model as ProductsListViewModel;
+            var result = controller.List(null, 2).ViewData.Model as ProductsListViewModel;
 
             PagingInfo pagingInfo = result.PagingInfo;
             Assert.Equal(2, pagingInfo.CurrentPage);
             Assert.Equal(4, pagingInfo.ItemsPerPage);
             Assert.Equal(5, pagingInfo.TotalItems);
             Assert.Equal(2, pagingInfo.TotalPages);
+        }
+
+        [Fact]
+        public void CanFilterCategory()
+        {
+            var mock = new Mock<IProductRepository>();
+            mock.Setup(m => m.Products).Returns((new[] {
+                new Product {ProductId = 1, Category = "cat1"},
+                new Product {ProductId = 2, Category = "cat1"},
+                new Product {ProductId = 3, Category = "cat1"},
+                new Product {ProductId = 4, Category = "cat2"},
+                new Product {ProductId = 5, Category = "cat2"},
+            }).AsQueryable<Product>());
+
+            var controller = new ProductController(mock.Object);
+
+            var result = controller.List("cat2").Model as ProductsListViewModel;
+
+            Assert.Equal(2, result.Products.Count());
+            Assert.Equal("cat2", result.Products.FirstOrDefault().Category);
         }
     }
 }
