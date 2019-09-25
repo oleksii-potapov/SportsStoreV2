@@ -34,7 +34,7 @@ namespace SportsStore.Tests
                 {
                     PageModel = new PagingInfo
                     {
-                        CurrentPage = 2,
+                        CurrentPage = 1,
                         TotalItems = 28,
                         ItemsPerPage = 10
                     },
