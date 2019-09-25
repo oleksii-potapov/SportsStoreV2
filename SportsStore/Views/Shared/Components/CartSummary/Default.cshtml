@@ -9,6 +9,9 @@
             @Model.ComputeTotalValue().ToString("c")
         </small>
     }
+</div>
+
+<div class="float-right">
     <a class="btn btn-sm btn-secondary"
        asp-controller="Cart" asp-action="Index"
        asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()">
