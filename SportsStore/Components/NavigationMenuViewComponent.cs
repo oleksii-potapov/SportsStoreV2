@@ -18,6 +18,7 @@ namespace SportsStore.Components
 
         public IViewComponentResult Invoke()
         {
+            ViewBag.SelectedCategory = RouteData?.Values["category"];
             return View(_repository.Products
                 .Select(p => p.Category)
                 .Distinct()

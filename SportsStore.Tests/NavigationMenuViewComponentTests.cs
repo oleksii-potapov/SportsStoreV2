@@ -8,6 +8,8 @@ using System.Linq;
 using SportsStore.Components;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Routing;
 
 namespace SportsStore.Tests
 {
@@ -33,6 +35,32 @@ namespace SportsStore.Tests
 
             Assert.Equal(3, result.Count());
             Assert.Equal("cat2", result.ElementAt(1));
+        }
+
+        [Fact]
+        public void IndicatesSelectedCategory()
+        {
+            string categoryToSelect = "Apples";
+            Mock<IProductRepository> mock = new Mock<IProductRepository>();
+            mock.Setup(m => m.Products).Returns((new[] {
+                new Product { ProductId = 1, Name="P1", Category="Apples"},
+                new Product { ProductId = 4, Name="P4", Category="Oranges"},
+            }).AsQueryable<Product>());
+
+            NavigationMenuViewComponent menu =
+                new NavigationMenuViewComponent(mock.Object);
+            menu.ViewComponentContext = new ViewComponentContext
+            {
+                ViewContext = new ViewContext
+                {
+                    RouteData = new RouteData()
+                }
+            };
+            menu.RouteData.Values["category"] = categoryToSelect;
+            string result = (string)(menu.Invoke() as ViewViewComponentResult)
+                .ViewData["SelectedCategory"];
+
+            Assert.Equal(categoryToSelect, result);
         }
     }
 }
