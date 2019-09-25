@@ -13,27 +13,19 @@ namespace SportsStore.Controllers
     public class CartController : Controller
     {
         private IProductRepository _repository;
+        private Cart _cart;
 
-        private Cart GetCart()
-        {
-            return HttpContext.Session.GetJson<Cart>("Cart") ?? new Cart();
-        }
-
-        private void SaveCart(Cart value)
-        {
-            HttpContext.Session.SetJson("Cart", value);
-        }
-
-        public CartController(IProductRepository repository)
+        public CartController(IProductRepository repository, Cart cartService)
         {
             _repository = repository;
+            _cart = cartService;
         }
 
         public ViewResult Index(string returnUrl)
         {
             return View(new CartIndexViewModel
             {
-                Cart = GetCart(),
+                Cart = _cart,
                 ReturnUrl = returnUrl
             });
         }
@@ -45,9 +37,7 @@ namespace SportsStore.Controllers
 
             if (product != null)
             {
-                Cart cart = GetCart();
-                cart.AddItem(product, 1);
-                SaveCart(cart);
+                _cart.AddItem(product, 1);
             }
             return RedirectToAction("Index", new { returnUrl });
         }
@@ -59,9 +49,7 @@ namespace SportsStore.Controllers
 
             if (product != null)
             {
-                Cart cart = GetCart();
-                cart.RemoveLine(product);
-                SaveCart(cart);
+                _cart.RemoveLine(product);
             }
             return RedirectToAction("Index", new { returnUrl });
         }
