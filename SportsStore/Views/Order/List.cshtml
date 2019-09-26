@@ -12,7 +12,7 @@
         {
             <tr>
                 <td>@order.Name</td>
-                <td>@order.Zip</td>
+                <td>@(order.Zip ?? "No zip code added")</td>
                 <th>Product</th>
                 <th>Quantity</th>
                 <td>
