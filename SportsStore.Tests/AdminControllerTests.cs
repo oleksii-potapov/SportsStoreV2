@@ -31,5 +31,36 @@ namespace SportsStore.Tests
             Assert.Equal("P2", result.ElementAt(1).Name);
             Assert.Equal(3, result.LastOrDefault().ProductId);
         }
+
+        [Fact]
+        public void CanEditProduct()
+        {
+            Mock<IProductRepository> mock = new Mock<IProductRepository>();
+            mock.Setup(m => m.Products).Returns((new[] {
+                new Product {ProductId = 100, Name="P"}
+            }).AsQueryable<Product>());
+
+            AdminController controller = new AdminController(mock.Object);
+            var result = controller.Edit(100).Model as Product;
+
+            Assert.Equal(100, result.ProductId);
+        }
+
+        [Fact]
+        public void CannotEditUnexistProduct()
+        {
+            Mock<IProductRepository> mock = new Mock<IProductRepository>();
+            mock.Setup(m => m.Products).Returns((new[] {
+                new Product{ ProductId = 1},
+                new Product{ ProductId = 2},
+                new Product{ ProductId = 3},
+            }).AsQueryable<Product>());
+
+            AdminController controller = new AdminController(mock.Object);
+
+            var result = controller.Edit(5);
+
+            Assert.Null(result.Model);
+        }
     }
 }
