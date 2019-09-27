@@ -56,6 +56,7 @@ namespace SportsStore
                 RouteConfig.MapRoutes(routes);
             });
             SeedData.EnsurePopulated(app);
+            IdentitySeedData.EnsurePopulated(app);
         }
     }
 }
