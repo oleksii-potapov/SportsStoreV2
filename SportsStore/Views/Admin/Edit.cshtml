@@ -1,7 +1,7 @@
 ﻿@model Product
 
 @{
-    ViewData["Title"] = "Edit Product";
+    ViewData["Title"] = Model.ProductId != 0 ? "Edit Product" : "Add Product";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
