@@ -8,12 +8,12 @@
           asp-href-include="/css/*.css" />
 </head>
 <body>
-    <nav class="navbar navbar-dark bg-dark" role="navigation">
+    <div class="navbar navbar-dark bg-dark" role="navigation">
         <a class="navbar-brand" href="#">SPORTS STORE</a>
         <div class="">
             @await Component.InvokeAsync("CartSummary")
         </div>
-    </nav>
+    </div>
     <div class="row m-1 p-1">
         <div id="categories" class="col-3">
             @await Component.InvokeAsync("NavigationMenu")
